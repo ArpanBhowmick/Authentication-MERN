@@ -1,5 +1,5 @@
 
-import { getUserDetails, loginUser, logoutUser, registerUser } from "../controllers/userController.js";
+import { getUserDetails, loginUser, logoutUser, refreshAccessToken, registerUser } from "../controllers/userController.js";
 import { Router } from "express";
 
 const router = Router();
@@ -15,6 +15,9 @@ router.get("/getUserDetails", getUserDetails);
 
 // logout route
 router.post("/logout", logoutUser);
+
+// refresh token route
+router.post("/refreshToken", refreshAccessToken);
 
 
 export default router;

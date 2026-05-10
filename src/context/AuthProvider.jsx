@@ -14,16 +14,17 @@ const AuthProvider = ({ children }) => {
     const verifyUser = async () => {
 
       try {
-        const response = await axios.get("/getUserDetails", {
+        const response = await axios.post("/refreshToken", {
           withCredentials: true,
         });
 
+        console.log(response.data);
         setAuth({
           user: response?.data?.user,
-          // roles: response?.data?.user?.roles,
+          accessToken: response?.data?.accessToken,
         });      
 
-        console.log(auth)
+        // console.log(auth)
         // console.log(auth) shows {} because setAuth() updates state asynchronously, not immediately.
       } catch (error) {
         console.error("Error verifying user:", error);

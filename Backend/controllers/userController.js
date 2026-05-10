@@ -1,8 +1,7 @@
+import { generateAccessToken, generateRefreshToken } from "../token.js";
 import { User } from "../model/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
-
 
 // register controller
 export const registerUser = async (req, res) => {
@@ -39,76 +38,69 @@ export const registerUser = async (req, res) => {
   }
 };
 
-
-
 //  login controller
-export const loginUser = async(req, res) => {
-
-  try{
-
+export const loginUser = async (req, res) => {
+  try {
     const { email, password } = req.body;
 
-      if (!email || !password) {
-        return res.status(400).json({ message: "All fields are required" });
-      }
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-      const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-      if (!user) {
-        return res.status(401).json({ message: "Invalid email or password" });
-      }
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
-      if (!isMatch) {
-        return res.status(401).json({ message: " Invalid email or password" });
-      }
-      
-const roles = user.roles;
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-      const token = jwt.sign({ id: user._id, roles }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    // const token = jwt.sign({ id: user._id, roles }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-      });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
- console.log(user);
- 
-      res.status(200).json({
-        message: "Login successful",
-         token, user: {
-           id: user._id,
-            name: user.name,
-             email: user.email,
-              roles 
-          } 
-        });
-        // console.log(user);
+    console.log(user);
 
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        roles: user.roles,
+      },
+    });
+    // console.log(user);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
-  
   }
+};
 
-}
-
-
-
-// get users details 
+// get users details
 export const getUserDetails = async (req, res) => {
   try {
-    
-    const token = req.cookies.token;
+    // const token = req.cookies.token;
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ message: "Token Missing" });
+      return res.status(401).json({ message: "Access Token Missing" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
 
     const user = await User.findById(decoded.id);
 
@@ -117,29 +109,65 @@ export const getUserDetails = async (req, res) => {
     }
 
     res.status(200).json({ user });
-
-
   } catch (error) {
-    res.status(500).json({ message: "Token Missing", error: error.message });
+    res.status(401).json({ message: "Token Missing", error: error.message });
   }
-}
+};
 
+//  refresh token controller
+export const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
 
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh Token Missing" });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+
+    const user = await User.findById(decoded.id);
+
+    // This line ONLY makes sense if you are ALSO storing refresh token in DB.
+    // if (!user || user.refreshToken !== refreshToken) {
+    //   return res.status(403).json({ message: "Invalid Refresh Token" });
+    // }
+
+    if (!user) {
+      return res.status(403).json({ message: "Invalid Refresh Token" });
+    }
+
+    const newAccessToken = generateAccessToken(user);
+
+    res.status(200).json({
+      accessToken: newAccessToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        roles: user.roles,
+      },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Invalid or Expired Refresh Token", error });
+  }
+};
 
 // logout controller
 export const logoutUser = async (req, res) => {
   try {
-
-    res.cookie("token", "", {
+    res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      expires: new Date(0)
-    })
+    });
+
+    // this is for locally testing, in production secure should be true and sameSite should be none
+    // res.clearCookie("refreshToken");
 
     res.status(200).json({ message: "Logout successful" });
-
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
-}
+};

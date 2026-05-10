@@ -45,20 +45,20 @@ export default function LoginPage() {
         { withCredentials: true },
       );
 
-      console.log("Login successful:", response?.data);
+      console.log("Login successful:", response?.data?.user);
 
+      const user = response?.data?.user;
       const accessToken = response?.data?.accessToken;
-      // const email = response?.data?.user?.email;
-      const roles = response?.data?.user?.roles;
+      // const roles = response?.data?.user?.roles;
 
-//  user: { email },
 
-      setAuth({ roles, accessToken });
+      setAuth({ user, accessToken });
       alert(response?.data?.message || "Login successful");
 
       navigate(from, { replace: true });
 
       console.log("ROLES FROM BACKEND:", response?.data?.user?.roles);
+
     } catch (err) {
       if (!err?.response) {
         alert("No Server Response");
