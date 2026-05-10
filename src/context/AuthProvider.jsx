@@ -18,7 +18,6 @@ const AuthProvider = ({ children }) => {
           withCredentials: true,
         });
 
-        console.log(response.data);
         setAuth({
           user: response?.data?.user,
           accessToken: response?.data?.accessToken,
