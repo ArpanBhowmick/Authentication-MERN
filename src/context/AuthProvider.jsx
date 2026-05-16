@@ -31,6 +31,7 @@ const AuthProvider = ({ children }) => {
          setLoading(false);
       }
     };
+    
     verifyUser();
 
   }, []);

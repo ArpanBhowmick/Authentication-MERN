@@ -1,4 +1,5 @@
 
+import verifyJWT from "../middleware/verifyJWT.js";
 import { getUserDetails, loginUser, logoutUser, refreshAccessToken, registerUser } from "../controllers/userController.js";
 import { Router } from "express";
 
@@ -11,7 +12,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // get user details route
-router.get("/getUserDetails", getUserDetails);
+router.get("/getUserDetails", verifyJWT, getUserDetails);
 
 // logout route
 router.post("/logout", logoutUser);

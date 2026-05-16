@@ -92,16 +92,17 @@ export const loginUser = async (req, res) => {
 // get users details
 export const getUserDetails = async (req, res) => {
   try {
-    // const token = req.cookies.token;
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1];
+    // middlewarecode
+    // const authHeader = req.headers.authorization;
+    // const token = authHeader && authHeader.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({ message: "Access Token Missing" });
-    }
+    // if (!token) {
+    //   return res.status(401).json({ message: "Access Token Missing" });
+    // }
 
-    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
+    // const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
 
+    //  main code
     const user = await User.findById(decoded.id);
 
     if (!user) {
@@ -110,7 +111,10 @@ export const getUserDetails = async (req, res) => {
 
     res.status(200).json({ user });
   } catch (error) {
-    res.status(401).json({ message: "Token Missing", error: error.message });
+    res.status(500).json({
+      message: "Token Missing",
+      error: error.message,
+    });
   }
 };
 

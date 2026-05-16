@@ -20,28 +20,13 @@ import {
 import { LogOut } from "lucide-react";
 
 function UsersList() {
-  // const [users, setUsers] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  
   const { auth, setAuth } = useAuth();
   const navigate = useNavigate();
 
   const user = auth.user;
 
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     try {
-  //       const response = await axios.get('/getUserDetails', {credentials: true});
-  //       setUsers(response?.data?.user);
-  //     } catch (err) {
-  //       setError('Failed to fetch users. Please try again later.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchUsers();
-  // }, []);
+  
 
   const handleLogout = async () => {
     try {
@@ -55,23 +40,6 @@ function UsersList() {
     }
   };
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <p className="text-lg text-gray-500">Loading users...</p>
-  //     </div>
-  //   );
-  // }
-
-  // if (error) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <div className="bg-red-50 text-red-600 p-4 rounded-lg max-w-md">
-  //         {error}
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
