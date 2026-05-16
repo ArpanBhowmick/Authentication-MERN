@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import axios from "@/api/axios";
 import useAuth from "./useAuth";
+import { useNavigate } from "react-router-dom";
 
 const useAxiosPrivate = () => {
   const { auth, setAuth } = useAuth();
@@ -23,9 +24,9 @@ const useAxiosPrivate = () => {
     );
 
     // RESPONSE INTERCEPTOR
-// .use() accepts two functions Meaning:
-// If request successful → run first function
-// If request fails → run second function
+    // .use() accepts two functions Meaning:
+    // If request successful → run first function
+    // If request fails → run second function
     const responseIntercept = axios.interceptors.response.use(
       (response) => response,
 
@@ -53,11 +54,10 @@ const useAxiosPrivate = () => {
             // retry original request
             return axios(prevRequest);
           } catch (err) {
-
             setAuth({});
 
             navigate("/login");
-            
+
             return Promise.reject(err);
           }
         }

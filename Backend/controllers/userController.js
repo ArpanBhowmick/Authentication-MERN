@@ -153,7 +153,7 @@ export const refreshAccessToken = async (req, res) => {
     });
   } catch (error) {
     res
-      .status(500)
+      .status(403)
       .json({ message: "Invalid or Expired Refresh Token", error });
   }
 };
@@ -175,3 +175,26 @@ export const logoutUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+
+
+
+
+
+
+export const getAllUsers = async (req, res) => {
+
+  try {
+    
+    const users = await User.find().select("-password")
+
+    res.status(200).json({ users });
+
+  } catch (error) {
+
+    res.status(500).json({ message: "Server error" });
+    
+  }
+
+}

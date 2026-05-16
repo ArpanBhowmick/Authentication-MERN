@@ -12,7 +12,7 @@ const verifyJWT = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
 
     // store decoded info in request so later controllers can use it.
     req.userId = decoded.id;
@@ -21,7 +21,7 @@ const verifyJWT = (req, res, next) => {
 
   } catch (error) {
 
-    return res.sendStatus(403).json({
+    return res.status(403).json({
       message: "Invalid Access Token",
     });
   }

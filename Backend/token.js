@@ -9,7 +9,7 @@ export const generateAccessToken = (user) => {
       roles: user.roles,
     },
     process.env.ACCESS_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "10s" }
   );
 };
 
@@ -21,6 +21,6 @@ export const generateRefreshToken = (user) => {
       roles: user.roles,
     },
     process.env.REFRESH_SECRET,
-    { expiresIn: "1d" }
+    { expiresIn: "20s" }
   );
 };

@@ -1,6 +1,6 @@
 
 import verifyJWT from "../middleware/verifyJWT.js";
-import { getUserDetails, loginUser, logoutUser, refreshAccessToken, registerUser } from "../controllers/userController.js";
+import { getAllUsers, getUserDetails, loginUser, logoutUser, refreshAccessToken, registerUser } from "../controllers/userController.js";
 import { Router } from "express";
 
 const router = Router();
@@ -13,6 +13,9 @@ router.post("/login", loginUser);
 
 // get user details route
 router.get("/getUserDetails", verifyJWT, getUserDetails);
+
+// get all users route
+router.get("/getAllUsers", verifyJWT, getAllUsers);
 
 // logout route
 router.post("/logout", logoutUser);

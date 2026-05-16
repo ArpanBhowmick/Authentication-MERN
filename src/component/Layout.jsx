@@ -34,6 +34,7 @@ function Layout() {
             <li><Link to="/editor">Editor</Link></li>
             <li><Link to="/admin">Admin</Link></li>
             <li><Link to="/lounge">Lounge</Link></li>
+            <li><Link to="/allUsers">AllUsers</Link></li>
           </ul>
         </div>
       </nav>

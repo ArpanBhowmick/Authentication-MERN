@@ -11,6 +11,8 @@ import Admin from "./component/Admin";
 import Lounge from "./component/Lounge";
 import Missing from "./component/Missing";
 import RequireAuth from "./component/RequireAuth";
+import AllUsers from "./component/AllUsers";
+
 
 
 const ROLES = {
@@ -33,6 +35,10 @@ const App = () => {
         <Route element={<RequireAuth allowedRoles={[2001]} />}>
           <Route path="/" element={<Home />} />
         </Route>
+
+        <Route element={<RequireAuth allowedRoles={[2001, ]} />}>
+          <Route path="allUsers" element={<AllUsers />} />
+          </ Route >
 
         <Route element={<RequireAuth allowedRoles={[1984]} />}>
           <Route path="editor" element={<Editor />} />
